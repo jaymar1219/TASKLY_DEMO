@@ -1,35 +1,33 @@
 // "use server";
 
-import { tasks } from "./data";
+import { addDocument, deleteDocument, getAllDocuments, getDocumentById, updateDocument } from "@/services/util";
 import { Task } from "./types";
+import { TASKS_COLLECTION } from "@/services/config";
 
 const createTask = async (task: Task) => {
     // Logic to create a new task
-    // TODO: Replace with actual data fetching logic
-    tasks.push(task);
-    console.log("Task created:", task);
-    return task;
+    await addDocument(TASKS_COLLECTION, task, task.id);
 }
 
 const updateTask = async (taskId: string, updatedTask: Partial<Task>) => {
     // Logic to update an existing task
-    // TODO: Replace with actual data fetching logic
+    await updateDocument(TASKS_COLLECTION, taskId, updatedTask);
 }
 
 const deleteTask = async (taskId: string) => {
     // Logic to delete a task
-    // TODO: Replace with actual data fetching logic
+    await deleteDocument(TASKS_COLLECTION, taskId);
 }
 
 const getTaskById = async (taskId: string): Promise<Task | null> => {
     // Logic to retrieve a task by its ID
-    // TODO: Replace with actual data fetching logic
-    return null;
+    const task = await getDocumentById<Task>(TASKS_COLLECTION, taskId);
+    return task || null;
 }
 
 const getAllTasks = async (): Promise<Task[]> => {
     // Logic to retrieve all tasks
-    // TODO: Replace with actual data fetching logic
+    const tasks = await getAllDocuments<Task>(TASKS_COLLECTION);
     return tasks;
 }
 
