@@ -22,7 +22,7 @@ export default function Page() {
             isCompleted: false,
             title,
             description,
-            dueDate: dueDate ? new Date(dueDate).toISOString() : undefined,
+            ...(dueDate && { dueDate: new Date(dueDate).toISOString() }),
             dateCreated: new Date().toISOString(),
         };
 

@@ -33,7 +33,7 @@ export default function Page() {
         const updatedTask = {
             title,
             description,
-            dueDate: dueDate ? new Date(dueDate).toISOString() : undefined,
+            ...(dueDate && { dueDate: new Date(dueDate).toISOString() }),
         };
 
         await updateTask(task.id, updatedTask);

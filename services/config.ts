@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getAuth, Auth } from "firebase/auth";
+import { getFirestore, Firestore } from "firebase/firestore";
+import type { FirebaseApp } from "firebase/app";
 
 export const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,11 +13,45 @@ export const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+let app: FirebaseApp;
+let auth: Auth;
+let db: Firestore;
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+const initializeFirebase = () => {
+  if (typeof window !== "undefined" && !app) {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+  }
+};
 
-export default app;
+// Initialize on client side
+if (typeof window !== "undefined") {
+  initializeFirebase();
+}
+
+export { initializeFirebase };
+export const getApp = () => {
+  if (!app) {
+    initializeFirebase();
+  }
+  return app;
+};
+
+export const getAuth_Instance = () => {
+  if (!auth) {
+    initializeFirebase();
+  }
+  return auth;
+};
+
+export const getDb = () => {
+  if (!db) {
+    initializeFirebase();
+  }
+  return db;
+};
+
+export default getApp;
 
 export const TASKS_COLLECTION =  "tasks";

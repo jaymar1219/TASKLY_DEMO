@@ -4,7 +4,7 @@ import { deleteDoc, getDoc } from "firebase/firestore";
 import { DocumentData } from "firebase/firestore";
 import { collection, addDoc, getDocs, doc, setDoc } from "firebase/firestore";
 
-import { db } from "./config";
+import { getDb } from "./config";
 
 /**
  * Add a document to an existing collection (or create if not exists)
@@ -18,12 +18,13 @@ export async function addDocument(
   data: object,
   docId?: string,
 ): Promise<string> {
+  const database = getDb();
   if (docId) {
-    await setDoc(doc(db, collectionName, docId), data);
+    await setDoc(doc(database, collectionName, docId), data);
 
     return docId;
   } else {
-    const docRef = await addDoc(collection(db, collectionName), data);
+    const docRef = await addDoc(collection(database, collectionName), data);
 
     return docRef.id;
   }
@@ -41,7 +42,8 @@ export async function updateDocument(
   docId: string,
   data: object,
 ): Promise<void> {
-  await setDoc(doc(db, collectionName, docId), data, { merge: true });
+  const database = getDb();
+  await setDoc(doc(database, collectionName, docId), data, { merge: true });
 }
 
 /**
@@ -52,7 +54,8 @@ export async function updateDocument(
 export async function getAllDocuments<T = DocumentData>(
   collectionName: string
 ): Promise<(T)[]> {
-  const querySnapshot = await getDocs(collection(db, collectionName));
+  const database = getDb();
+  const querySnapshot = await getDocs(collection(database, collectionName));
   const res: T[] = querySnapshot.docs.map(
     (doc) => ({ id: doc.id, ...doc.data() } as T)
   );
@@ -70,14 +73,16 @@ export async function deleteDocument(
   collectionName: string,
   docId: string,
 ): Promise<void> {
-  await deleteDoc(doc(db, collectionName, docId));
+  const database = getDb();
+  await deleteDoc(doc(database, collectionName, docId));
 }
 
 export async function getDocumentById<T = DocumentData>(
   collectionName: string,
   docId: string,
 ): Promise<(T) | null> {
-  const docRef = doc(db, collectionName, docId);
+  const database = getDb();
+  const docRef = doc(database, collectionName, docId);
   const docSnap = await getDoc(docRef);
 
   if (!docSnap.exists()) {
