@@ -1,4 +1,3 @@
-"use server"
 
 import { tasks } from "./data";
 import { Task } from "./types";
@@ -6,6 +5,9 @@ import { Task } from "./types";
 const createTask = async (task: Task) => {
     // Logic to create a new task
     // TODO: Replace with actual data fetching logic
+    tasks.push(task);
+    console.log("Task created:", task);
+    return task;
 }
 
 const updateTask = async (taskId: string, updatedTask: Partial<Task>) => {
